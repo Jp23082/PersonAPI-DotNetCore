@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Examples.Charge.Domain.Aggregates.ExampleAggregate.Interfaces
 {
-    public interface IExampleRepository
+    public interface IExampleRepository<TEntity>: IDisposable where TEntity: class
     {
         Task<IEnumerable<Example>> FindAllAsync();
     }

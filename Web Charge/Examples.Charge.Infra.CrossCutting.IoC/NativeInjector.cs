@@ -24,19 +24,27 @@ namespace Examples.Charge.Infra.CrossCutting.IoC
         {
             services.AddTransient<ExampleDto>();
 
+            #region Example
             services.AddScoped<IExampleFacade, ExampleFacade>();
-            services.AddScoped<IExampleService, ExampleService>();
-            services.AddScoped<IExampleRepository, ExampleRepository>();
+            //services.AddScoped<IExampleService, ExampleService>();
+            //services.AddScoped<IExampleRepository, ExampleRepository>();
+            #endregion
 
+            #region Person
             services.AddScoped<IPersonFacade, PersonFacade>();
             services.AddScoped<IPersonService, PersonService>();
             services.AddScoped<IPersonRepository, PersonRepository>();
+            #endregion
 
+            #region PersonPhone
             services.AddScoped<IPersonPhoneService, PersonPhoneService>();
             services.AddScoped<IPersonPhoneRepository, PersonPhoneRepository>();
-            
+            #endregion
+
+            #region PhoneNumberType
             services.AddScoped<IPhoneNumberTypeService, PhoneNumberTypeService>();
             services.AddScoped<IPhoneNumberTypeRepository, PhoneNumberTypeRepository>();
+            #endregion
         }
 
         private static void RegisterAutoMapper(IServiceCollection services)

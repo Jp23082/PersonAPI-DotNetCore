@@ -11,6 +11,8 @@ using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IO;
 using System.Linq;
+using Examples.Charge.Application.AutoMapper;
+using Examples.Charge.Swagger;
 
 namespace Examples.Charge.API
 {
@@ -31,37 +33,10 @@ namespace Examples.Charge.API
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Examples.Charge.Infra.Data.Configuration"));
             });
+
             NativeInjector.Setup(services);
-            services.AddAutoMapper();
-
-            services.AddSwaggerGen(options =>
-            {
-                options.CustomSchemaIds(x => x.FullName);
-
-                options.CustomOperationIds(e =>
-                {
-                    return $"{e.ActionDescriptor.RouteValues["controller"]}_{e.HttpMethod}{e.ActionDescriptor.Parameters?.Select(a => a.Name).ToString()}";
-                });
-                options.DescribeAllEnumsAsStrings();
-                options.SwaggerDoc("v1", new Info
-                {
-                    Version = "v1",
-                    Title = "Example Api",
-                    Description = "Example Charge Api.",
-                    TermsOfService = "None",
-                    Contact = new Contact
-                    {
-                        Name = "Example",
-                        Email = "example@example.com"
-                    }
-                });
-
-                var xmlWebApiFile = Path.Combine(AppContext.BaseDirectory, $"PGC.Api.xml");
-                if (File.Exists(xmlWebApiFile))
-                {
-                    options.IncludeXmlComments(xmlWebApiFile);
-                }
-            });
+            services.AddAutoMapper(typeof(ExampleProfile));
+            services.AddSwaggerConfiguration();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -71,14 +46,7 @@ namespace Examples.Charge.API
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSwagger();
-
-            app.UseSwaggerUI(options =>
-            {
-                options.SwaggerEndpoint("../swagger/v1/swagger.json", "Example Api");
-                options.DisplayRequestDuration();
-            });
-
+            app.UserConfiguration();
 
             app.UseMvc();
         }
